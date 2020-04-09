@@ -32,17 +32,17 @@ if (Modernizr.webgl) {
       mobile = true;
     } else {
       mobile = false;
-    };
+    }
 
 
     variables = d3.map(data, function(d) {
-      return d.GPL_TYPE
+      return d.GPL_TYPE;
     }).keys();
 
     // just get the dates out of the column names
     columnDates = Object.keys(data[0]).filter(function(d) {
       return /^[A-Z]/i.test(d) == false;
-    })
+    });
 
     dates = Object.keys(data[0]).filter(function(d) {
       return /^[A-Z]/i.test(d) == false;
@@ -626,7 +626,7 @@ if (Modernizr.webgl) {
       map.getCanvasContainer().style.cursor = null;
       map.setFilter("state-fills-hover", ["==", "AREACD", ""]);
       oldAREACD = "";
-      $("#areaselect").val(null).trigger('change.select2');
+      $("#areaselect").val(null).trigger("chosen:updated");
       hideaxisVal();
     }
 

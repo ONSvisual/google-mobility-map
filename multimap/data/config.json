@@ -1,0 +1,19 @@
+{"ons":{
+"maptitle": "Google mobility data map",
+"varcolour": [
+  [ "#045a8d", "#2b8cbe", "#74a9cf", "#bdc9e1", "#f1eef6" ],
+  [ "#045a8d", "#2b8cbe", "#74a9cf", "#bdc9e1", "#f1eef6" ],
+  [ "#045a8d", "#2b8cbe", "#74a9cf", "#bdc9e1", "#f1eef6" ],
+  [ "#045a8d", "#2b8cbe", "#74a9cf", "#bdc9e1", "#f1eef6" ],
+  [ "#045a8d", "#2b8cbe", "#74a9cf", "#bdc9e1", "#f1eef6" ],
+  [ "#f1eef6", "#bdc9e1", "#74a9cf", "#2b8cbe", "#045a8d" ]
+],
+"varload": 0,
+"varunit": ["Compared to baseline","Compared to baseline","Compared to baseline","Compared to baseline","Compared to baseline","Compared to baseline"],
+"displaydecimals": 0,
+"legenddecimals": 0,
+"breaks": "jenks",
+"dropticks": false,
+"numberBreaks": 5,
+"nullcolour":"#6D6E72"
+}}
