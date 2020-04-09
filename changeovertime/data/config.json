@@ -1,6 +1,6 @@
 {
   "ons": {
-    "maptitle": "Time series map about life expectancy",
+    "maptitle": "Time series map about Google mobility data",
     "varcolour": [
       [ "#427cc5", "#5fabdc", "#abdef8", "#ebffff", "#ce383f" ],
      [ "#427cc5", "#5fabdc", "#abdef8", "#ffbe9a", "#ce383f" ],
