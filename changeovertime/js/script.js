@@ -714,6 +714,7 @@ if (Modernizr.webgl) {
       if (mobile == false) {
         d3.select("#currLine")
           .style("opacity", function() {
+            console.log(!isNaN(rateById[code]))
             if (!isNaN(rateById[code])) {
               return 1;
             } else {
@@ -750,7 +751,13 @@ if (Modernizr.webgl) {
           .style("opacity", 1)
           .transition()
           .duration(300)
-          .attr("x", x(dates[a]))
+          .attr("x", function(){
+            if (!isNaN(rateById[code])) {
+              return x(dates[Math.round(dates.length/2)]);
+            } else {
+              return x(dates[a]);
+            }
+          })
           .attr("y", function() {
             if (!isNaN(rateById[code])) {
               return y(rateById[code]) - 20;

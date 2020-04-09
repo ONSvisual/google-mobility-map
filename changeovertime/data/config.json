@@ -2,6 +2,15 @@
   "ons": {
     "maptitle": "Time series map about life expectancy",
     "varcolour": [
+      [ "#427cc5", "#5fabdc", "#abdef8", "#ebffff", "#ce383f" ],
+     [ "#427cc5", "#5fabdc", "#abdef8", "#ffbe9a", "#ce383f" ],
+     [ "#427cc5", "#5fabdc", "#abdef8", "#ffbe9a", "#ce383f" ],
+      [ "#427cc5", "#5fabdc", "#abdef8", "#ebffff", "#ce383f" ],
+
+      [ "#427cc5", "#5fabdc", "#abdef8", "#ebffff", "#ce383f" ],
+      [ "#ce383f", "#ebffff", "#abdef8", "#5fabdc", "#427cc5" ]
+    ],
+    "varcolour2":[
       [ "#003548", "#296378", "#5894ab", "#8dc8df", "#ce3733" ],
       [ "#003548", "#296378", "#5894ab", "#cda389", "#ce3733" ],
       [ "#003548", "#296378", "#5894ab", "#cda389", "#ce3733" ],
