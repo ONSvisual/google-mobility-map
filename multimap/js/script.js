@@ -252,7 +252,6 @@ if (Modernizr.webgl) {
         breaks = config.ons.breaks[a];
       }
 
-      console.log(breaks);
       //round breaks to specified decimal places
       breaks = breaks.map(function(each_element) {
         return Number(each_element.toFixed(dvc.legenddecimals));
