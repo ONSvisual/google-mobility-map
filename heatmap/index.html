@@ -107,7 +107,7 @@
 
   <div id="key"></div>
   <div id="charts"></div>
-  <h6 class="source">Source: Office for National Statistics</h6>
+  <h6 class="source">Source: Office for National Statistics, Google Community Mobility Reports</h6>
 
   <script src="https://d3js.org/d3.v4.min.js"></script>
   <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
@@ -128,33 +128,52 @@
       displayformat = d3.format("." + dvc.essential.displaydecimals + "f");
 
 
-      chosenCountries = ["UK", "Spain", "Italy", "Germany", "France", "USA"]
+      chosenCountries = dvc.essential.chosenCountries;
 
       just6 = graphic_data.filter(function(d) {
         return chosenCountries.contains(d.Country);
       })
+
+      //create custom sorting index as set by entry of countries in the config
+      sortObject={}
+      for(i=0;i<chosenCountries.length;i++){
+        sortObject[chosenCountries[i]]=i;
+      }
+
+      categorySort={}
+      for(i=0;i<dvc.essential.categorySort.length;i++){
+        categorySort[dvc.essential.categorySort[i]]=i;
+      }
+
+      just6.sort(function(a,b){
+        return categorySort[a.category] - categorySort[b.category]
+      })
+      just6.sort(function(a,b){
+        return sortObject[a.Country] - sortObject[b.Country]
+      })
+
+      nameCodeLookup={}
+      for(i=0;i<just6.length;i++){
+        nameCodeLookup[just6[i].Country]=just6[i].location
+      }
 
       columnDates = Object.keys(graphic_data[0]).filter(function(d) {
         return /^[A-Z]/i.test(d) == false;
       });
 
       dates = columnDates.map(function(d) {
-        return d3.timeParse("%Y-%m-%d")(d);
+        return d3.timeParse(dvc.essential.timeParseFormat)(d);
       });
 
-      console.log(just6)
-      console.log(dates)
 
       nested = d3.nest()
         .key(function(d) {
-          return d.Category
+          return d.category
         })
         .key(function(d) {
           return d.Country
         })
         .entries(just6)
-
-      console.log("nested", nested)
 
       if (chartwidth < dvc.optional.mobileBreakpoint) {
         var screenSize = "small";
@@ -218,7 +237,7 @@
 
       category.append('text')
         .text(function(d) {
-          return d.key
+          return nameCodeLookup[d.key]
         })
         .attr("x", -5)
         .attr('text-anchor', "end")
@@ -239,7 +258,7 @@
         .enter()
         .append('rect')
         .attr("x", function(d, i) {
-          return x(d3.timeParse("%Y-%m-%d")(d.date));
+          return x(d3.timeParse(dvc.essential.timeParseFormat)(d.date));
         })
         .attr('y', -15)
         .attr('height', 0.9 * categoryHeight)
@@ -455,7 +474,6 @@
           })
           .style("opacity", 0.8)
           .style("fill", function(d) {
-            console.log(d)
             return d.z;
           });
 
@@ -527,7 +545,7 @@
       d3.json("config.json", function(error, config) {
         dvc = config;
 
-        d3.csv("https://raw.githubusercontent.com/datasciencecampus/google-mobility-reports-data/master/csvs/international_national_trends_G20_SE.csv", function(error, data) {
+        d3.csv(dvc.essential.graphic_data_url, function(error, data) {
 
           graphic_data = data;
 

@@ -1,22 +1,18 @@
 {
   "essential" : {
-    "graphic_data_url": "data.csv",
-    "colour": "#244E6E",
-    "opacity": "0.8",
-		"sourceText":["Office for National Statistics – Annual Population Survey 3-year pooled dataset 2015-17"],
-    "xAxisLabel":"",
+    "graphic_data_url": "https://raw.githubusercontent.com/datasciencecampus/google-mobility-reports-data/master/csvs/international_national_trends_G20_20200410.csv",
+    "chosenCountries":["GB", "ES", "IT", "DE", "FR", "US"],
+    "categorySort":["Workplaces","Retail & recreation","Transit stations","Grocery & pharmacy","Parks","Residential"],
     "categoryHeight": {
       "small": 20,
       "medium": 20
     },
-    "timeFormat": "%d/%m/%Y",
+    "timeParseFormat": "%Y-%m-%d",
     "xAxisTimeFormat": "%d %b %y",
     "scaleFactor": {
       "small":4.5,
       "medium":3
     },
-    "legendLabels":["Working for Self", "Partner", "Running a Business", "Sole Director of Own Limited Business", "Sub-contractor", "Free-lancer"],
-    "colour_palette":["#053D58","#24A79B","#3A7899","#ABC149","#005D60","#3383EF"],
     "breaks":"jenks",
     "numberBreaks":5,
     "legenddecimals":0,
@@ -30,13 +26,13 @@
         "top": 20,
         "right": 55,
         "bottom": 20,
-        "left": 100
+        "left": 110
       },
       "medium": {
         "top": 20,
         "right": 55,
         "bottom": 20,
-        "left": 100
+        "left": 140
       }
     },
     "mobileBreakpoint" : 610,
