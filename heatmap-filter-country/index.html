@@ -169,6 +169,7 @@
 
   <h4>Areas</h4>
   <div id="dropdown"></div>
+  <input type="hidden" value="" name="_areaselect">
   <h4>Categories</h4>
   <div id="categories"></div>
   <div id="key"></div>
@@ -180,6 +181,7 @@
   <script src="https://cdn.ons.gov.uk/vendor/pym/1.3.2/pym.min.js" type="text/javascript"></script>
   <script src="https://cdn.ons.gov.uk/vendor/jquery/2.1.4/jquery.min.js"></script>
   <script src="../lib/chosen.jquery.js"></script>
+  <script src="../lib/chosen.order.jquery.min.js"></script>
   <script src="../lib/simple-statistics.min.js"></script>
   <script src="../lib/chroma.min.js"></script>
   <script src="../lib/queue.js"></script>
@@ -226,6 +228,13 @@
         return d3.timeParse(dvc.essential.timeParseFormat)(d);
       });
 
+      var filtereddata=filterdata($('#areaselect').getSelectionOrder(),$('#categoryselect').getSelectionOrder())
+      defineBreaks(filtereddata);
+      setupScales();
+      drawHeatmap(filtereddata)
+      createKey();
+
+
       function buildCategoryDropdown(data){
         var uniques = d3.map(data,function(d){
           return d.category;
@@ -234,13 +243,11 @@
         var optns = d3.select("#categories").append("div").attr("id", "sel").append("select")
           .attr("id", "categoryselect")
           .attr("style", "width:98%")
-          .attr("class", "chosen-select")
+          .attr("class", "chosen")
           .property("multiple", true);
 
-
         optns.append("option");
-        //
-        //
+
         optns.selectAll("p").data(uniques).enter().append("option")
           .attr("value", function(d) {
             return d;
@@ -251,15 +258,15 @@
           .property("selected", "selected");
 
         $('#categoryselect').chosen({
-          // multiple:true,
           placeholder_text_multiple: "Choose categories",
           width: "98%",
         });
 
-        $('#categoryselect').on('change',function(){
-          areacode = $('#areaselect').val();
-          categories = $('#categoryselect').val();
-          if(areacode!=null&categories!=null){
+        $('#categoryselect').on('change',function(e,param){
+          $('#categoryselect').trigger("chosen:updated")
+          areacode = $('#areaselect').getSelectionOrder();
+          categories = $('#categoryselect').getSelectionOrder();
+          if(areacode!=null&&categories!=null){
             var filtereddata=filterdata(areacode,categories)
             defineBreaks(filtereddata);
             setupScales();
@@ -289,9 +296,10 @@
           return d3.ascending(a[0], b[0]);
         });
 
-        // Build option menu for occupations
+        // Build option menu for country
         var optns = d3.select("#dropdown").append("div").attr("id", "sel").append("select")
           .attr("id", "areaselect")
+          .attr("name","areaselect")
           .attr("style", "width:98%")
           .attr("class", "chosen-select")
           .property("multiple", true);
@@ -311,7 +319,6 @@
             if(d[1]=="GB")return "selected"
           });
 
-
         $('#areaselect').chosen({
           // multiple:true,
           placeholder_text_multiple: "Choose areas",
@@ -319,9 +326,10 @@
         });
 
         $('#areaselect').on('change', function() {
-          areacode = $('#areaselect').val();
-          categories = $('#categoryselect').val();
-          if(areacode!=null&categories!=null){
+          $('#areaselect').trigger("chosen:updated")
+          areacode = $('#areaselect').getSelectionOrder();
+          categories = $('#categoryselect').getSelectionOrder();
+          if(areacode!=null&&categories!=null){
             var filtereddata=filterdata(areacode,categories)
             defineBreaks(filtereddata);
             setupScales();
@@ -368,7 +376,7 @@
           nameCodeLookup[data[i].Country] = data[i].location
         }
 
-        nested = d3.nest()
+        var nested = d3.nest()
           .key(function(d) {
             return d.category
           })
@@ -486,13 +494,6 @@
             pymChild.sendHeight()
           }
       }
-
-      var filtereddata=filterdata($('#areaselect').val(),$('#categoryselect').val())
-      defineBreaks(filtereddata);
-      setupScales();
-      drawHeatmap(filtereddata)
-      createKey();
-
 
       function hideaxisVal() {
         d3.select("#currLine")
