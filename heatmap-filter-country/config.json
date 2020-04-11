@@ -1,0 +1,44 @@
+{
+  "essential" : {
+    "graphic_data_url": {
+      "Country":"https://raw.githubusercontent.com/datasciencecampus/google-mobility-reports-data/master/csvs/international_national_trends_G20_20200410.csv",
+      "location":"https://raw.githubusercontent.com/datasciencecampus/google-mobility-reports-data/master/csvs/international_local_area_trends_G20_20200410.csv"
+      },
+    "chosenCountries":["GB", "ES", "IT", "DE", "FR", "US"],
+    "categorySort":["Workplaces","Retail & recreation","Transit stations","Grocery & pharmacy","Parks","Residential"],
+    "categoryHeight": {
+      "small": 20,
+      "medium": 20
+    },
+    "timeParseFormat": "%Y-%m-%d",
+    "xAxisTimeFormat": "%d %b %y",
+    "scaleFactor": {
+      "small":4.5,
+      "medium":3
+    },
+    "breaks":"jenks",
+    "numberBreaks":5,
+    "legenddecimals":0,
+    "displaydecimals":0,
+    "varcolour":"PuBu",
+    "varunit":"comparison to baseline"
+  },
+  "optional" : {
+    "margin": {
+      "small": {
+        "top": 20,
+        "right": 55,
+        "bottom": 20,
+        "left": 110
+      },
+      "medium": {
+        "top": 20,
+        "right": 55,
+        "bottom": 20,
+        "left": 140
+      }
+    },
+    "mobileBreakpoint" : 610,
+    "tickDayInterval": 14
+  }
+}

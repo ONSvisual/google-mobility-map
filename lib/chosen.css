@@ -312,9 +312,10 @@ white-space: nowrap;
   background-clip: padding-box;
   /* -webkit-box-shadow: 0 0 2px #fff inset, 0 1px 0 rgba(0, 0, 0, 0.05);
           box-shadow: 0 0 2px #fff inset, 0 1px 0 rgba(0, 0, 0, 0.05); */
-  color: #206095;
-  line-height: 20px;
+  color: white;
+  line-height: 28px;
   cursor: default;
+  background-color: #206095
 }
 
 .chosen-container-multi .chosen-choices li.search-choice span {
@@ -328,8 +329,8 @@ white-space: nowrap;
 
 .chosen-container-multi .chosen-choices li.search-choice .search-choice-close {
   position: absolute;
-    top: 8px;
-    right: 6px;
+    top: 13px;
+    right: 8px;
     display: block;
     width: 10px;
     height: 10px;
