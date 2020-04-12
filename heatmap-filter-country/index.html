@@ -486,7 +486,7 @@
           d3.selectAll('path.domain')
             .style('opacity', 0);
 
-          svg.append('g').attr("class", "axis").call(xaxis).attr('transform', "translate(" + (0.475 * x.range()[1] / columnDates.length) + "," + (data.length * categoryHeight + 3) + ")")
+          svg.append('g').attr("class", "axis").call(xaxis).attr('transform', "translate(" + (0.475 * x.range()[1] / columnDates.length) + "," + ($('#areaselect').val().length * categoryHeight +3) + ")")
 
           if(pymChild==null){
             pymChild = new pym.Child
