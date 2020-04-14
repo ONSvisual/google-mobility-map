@@ -1,7 +1,7 @@
 <html>
 
 <head>
-  <title>Country heatmap</title>
+  <title>Region heatmap</title>
   <meta name="description" content="">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
@@ -195,6 +195,9 @@
       legendformat = d3.format("." + dvc.essential.legenddecimals + "f");
       displayformat = d3.format("." + dvc.essential.displaydecimals + "f");
 
+
+
+
       buildCategoryDropdown(graphic_data)
       selectlist(graphic_data)
 
@@ -228,15 +231,15 @@
         return d3.timeParse(dvc.essential.timeParseFormat)(d);
       });
 
-      var filtereddata=filterdata($('#areaselect').getSelectionOrder(),$('#categoryselect').getSelectionOrder())
+      var filtereddata = filterdata($('#areaselect').getSelectionOrder(), $('#categoryselect').getSelectionOrder())
       defineBreaks(filtereddata);
       setupScales();
       drawHeatmap(filtereddata)
       createKey();
 
 
-      function buildCategoryDropdown(data){
-        var uniques = d3.map(data,function(d){
+      function buildCategoryDropdown(data) {
+        var uniques = d3.map(data, function(d) {
           return d.category;
         }).keys().sort()
 
@@ -262,12 +265,12 @@
           width: "98%",
         });
 
-        $('#categoryselect').on('change',function(e,param){
+        $('#categoryselect').on('change', function(e, param) {
           $('#categoryselect').trigger("chosen:updated")
           areacode = $('#areaselect').getSelectionOrder();
           categories = $('#categoryselect').getSelectionOrder();
-          if(areacode!=null&&categories!=null){
-            var filtereddata=filterdata(areacode,categories)
+          if (areacode != null && categories != null) {
+            var filtereddata = filterdata(areacode, categories)
             defineBreaks(filtereddata);
             setupScales();
             drawHeatmap(filtereddata)
@@ -276,7 +279,7 @@
         })
 
 
-      }//end buildCategoryDropdown
+      } //end buildCategoryDropdown
 
       function selectlist(data) {
 
@@ -286,20 +289,28 @@
           return d.location
         }).keys().sort();
 
+
         var areacodes = uniques.map(function(d) {
           return graphic_data.filter(function(e) {
             return e.location == d
           })[0].Country;
         });
-
-        var menuarea = d3.zip(uniques, areacodes).sort(function(a, b) {
+        //
+        var menuarea2 = d3.zip(uniques, areacodes).sort(function(a, b) {
           return d3.ascending(a[0], b[0]);
+        }).map(function(d){
+          return {country:menuarea[d[1]],location:d[0]}
         });
+
+        menunest=d3.nest().key(function(d){return d.country}).entries(menuarea2).sort(function(a,b){
+          if (a.key<b.key){return -1}else if(a.key>b.key){return 1}
+        })
+        console.log(menunest)
 
         // Build option menu for country
         var optns = d3.select("#dropdown").append("div").attr("id", "sel").append("select")
           .attr("id", "areaselect")
-          .attr("name","areaselect")
+          .attr("name", "areaselect")
           .attr("style", "width:98%")
           .attr("class", "chosen-select")
           .property("multiple", true);
@@ -308,15 +319,17 @@
         optns.append("option");
         //
         //
-        optns.selectAll("p").data(menuarea).enter().append("option")
+        optns.selectAll("optgroup").data(menunest).enter().append("optgroup")
+          .attr("label",function(d){return d.key})
+          .selectAll('option').data(function(d){return d.values}).enter().append('option')
           .attr("value", function(d) {
-            return d[1];
+            return d.location;
           })
           .text(function(d) {
-            return d[0];
+            return d.location;
           })
-          .property("selected",function(d){
-            if(d[1]=="GB")return "selected"
+          .property("selected", function(d) {
+            if (d.location == "Greater London") return "selected"
           });
 
         $('#areaselect').chosen({
@@ -329,8 +342,8 @@
           $('#areaselect').trigger("chosen:updated")
           areacode = $('#areaselect').getSelectionOrder();
           categories = $('#categoryselect').getSelectionOrder();
-          if(areacode!=null&&categories!=null){
-            var filtereddata=filterdata(areacode,categories)
+          if (areacode != null && categories != null) {
+            var filtereddata = filterdata(areacode, categories)
             defineBreaks(filtereddata);
             setupScales();
             drawHeatmap(filtereddata)
@@ -339,20 +352,20 @@
         })
       } //end selectlist
 
-      function filterdata(countries,categories) {
+      function filterdata(countries, categories) {
 
         filtered = graphic_data.filter(function(d) {
-          return countries.contains(d.Country);
-        }).filter(function(d){
+          return countries.contains(d.location);
+        }).filter(function(d) {
           return categories.contains(d.category)
         })
 
-        var countrySort={}
+        var countrySort = {}
         for (i = 0; i < countries.length; i++) {
           countrySort[countries[i]] = i;
         }
 
-        var categorySort={}
+        var categorySort = {}
         for (i = 0; i < countries.length; i++) {
           categorySort[categories[i]] = i;
         }
@@ -370,7 +383,7 @@
 
       }
 
-      function drawHeatmap (data){
+      function drawHeatmap(data) {
         nameCodeLookup = {}
         for (i = 0; i < data.length; i++) {
           nameCodeLookup[data[i].Country] = data[i].location
@@ -403,7 +416,7 @@
           .range([0, width])
 
         d3.select('div#charts')
-            .selectAll("*").remove()
+          .selectAll("*").remove()
 
         var svg = d3.select('div#charts')
           .selectAll('svg')
@@ -470,7 +483,11 @@
             return 0.95 * x.range()[1] / columnDates.length
           })
           .attr("fill", function(d) {
-            return color(+d.value)
+            if (isNaN(+d.value)) {
+              return "#666"
+            } else {
+              return color(+d.value)
+            }
           })
           .on("mouseover", function(d) {
             setAxisVal(d.value)
@@ -479,20 +496,20 @@
             hideaxisVal();
           })
 
-          var xaxis = d3.axisBottom(x)
-            .tickSize(3)
-          // .ticks(d3.timeDay.every(dvc.optional.tickDayInterval));
+        var xaxis = d3.axisBottom(x)
+          .tickSize(3)
+        // .ticks(d3.timeDay.every(dvc.optional.tickDayInterval));
 
-          d3.selectAll('path.domain')
-            .style('opacity', 0);
+        d3.selectAll('path.domain')
+          .style('opacity', 0);
 
-          svg.append('g').attr("class", "axis").call(xaxis).attr('transform', "translate(" + (0.475 * x.range()[1] / columnDates.length) + "," + ($('#areaselect').val().length * categoryHeight +3) + ")")
+        svg.append('g').attr("class", "axis").call(xaxis).attr('transform', "translate(" + (0.475 * x.range()[1] / columnDates.length) + "," + ($('#areaselect').val().length * categoryHeight + 3) + ")")
 
-          if(pymChild==null){
-            pymChild = new pym.Child
-          }else{
-            pymChild.sendHeight()
-          }
+        if (pymChild == null) {
+          pymChild = new pym.Child
+        } else {
+          pymChild.sendHeight()
+        }
       }
 
       function hideaxisVal() {
@@ -506,7 +523,11 @@
       function setAxisVal(value) {
         d3.select("#currLine")
           .style("opacity", function() {
-            return 1;
+            if (isNaN(value)) {
+              return 0
+            } else {
+              return 1;
+            }
           })
           .transition()
           .duration(400)
@@ -514,20 +535,27 @@
             return xkey(value);
           })
           .attr("x2", function() {
-
             return xkey(value);
           });
 
 
         d3.select("#currVal")
           .text(function() {
-            return displayformat(value);
+            if (isNaN(value)) {
+              return "Data unavailable"
+            } else {
+              return displayformat(value);
+            }
           })
           .style("opacity", 1)
           .transition()
           .duration(400)
           .attr("x", function() {
-            return xkey(value);
+            if (isNaN(value)) {
+              return xkey(midpoint)
+            } else {
+              return xkey(value);
+            }
           })
       }
 
@@ -730,15 +758,37 @@
       d3.json("config.json", function(error, config) {
         dvc = config;
 
-        d3.csv(dvc.essential.graphic_data_url["Country"], function(error, data) {
+        d3.queue()
+        .defer(d3.csv,dvc.essential.graphic_data_url["Country"])
+        .await(function(error,data){
+          var uniques = d3.map(data, function(d) {
+            return d.location
+          }).keys().sort();
 
-          graphic_data = data;
-
-          pymChild = new pym.Child({
-            renderCallback: drawGraphic
+          var areacodes = uniques.map(function(d) {
+            return data.filter(function(e) {
+              return e.location == d
+            })[0].Country;
           });
-        }) // close d3.csv
-      })
+
+          menuarea={}
+          d3.zip(uniques, areacodes).sort(function(a, b) {
+            return d3.ascending(a[0], b[0]);
+          }).forEach(function(d){
+            menuarea[d[1]]=d[0]
+          });
+
+          d3.csv(dvc.essential.graphic_data_url["location"], function(error, data) {
+
+            graphic_data = data;
+
+            pymChild = new pym.Child({
+              renderCallback: drawGraphic
+            });
+          }) // close d3.csv
+        })//close await
+
+      })//close d3.json
     } else {
       pymChild = new pym.Child();
       pymChild.sendHeight();

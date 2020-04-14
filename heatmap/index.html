@@ -414,7 +414,7 @@
         //set up d3 color scales
         color = d3.scaleThreshold()
           .domain(breaks.slice(1))
-          .range(colour);
+          .range(colour.reverse());
 
       }
 
