@@ -13,11 +13,11 @@
       "small":4.5,
       "medium":3
     },
-    "breaks":"jenks",
-    "numberBreaks":5,
+    "breaks":[[-100,-80,-60,-40,-20,20,40,60,75]],
+    "numberBreaks":8,
     "legenddecimals":0,
     "displaydecimals":0,
-    "varcolour":"PuBu",
+    "varcolour":["#b2182b","#d6604d","#f4a582","#fddbc7","#f7f7f7","#d1e5f0","#92c5de","#4393c3","#2166ac"],
     "varunit":"comparison to baseline"
   },
   "optional" : {
