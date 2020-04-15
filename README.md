@@ -1,7 +1,6 @@
 # Change over time for the Google mobility data as extracted by the DSC
 
-[Change over time UK Map]
-(https://onsvisual.github.io/google-mobility-map/changeovertime/index.html)
+[Change over time UK Map](https://onsvisual.github.io/google-mobility-map/changeovertime/index.html)
 
 [Multimap (latest date)](https://onsvisual.github.io/google-mobility-map/multimap/index.html)
 
