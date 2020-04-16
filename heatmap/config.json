@@ -13,6 +13,10 @@
       "small":4.5,
       "medium":3
     },
+    "tickNumber":{
+      "small":2,
+      "medium":6
+    },
     "breaks":[[-100,-80,-60,-40,-20,20,40,60,75]],
     "numberBreaks":8,
     "legenddecimals":0,
@@ -24,7 +28,7 @@
     "margin": {
       "small": {
         "top": 20,
-        "right": 55,
+        "right": 20,
         "bottom": 20,
         "left": 110
       },
@@ -35,7 +39,7 @@
         "left": 140
       }
     },
-    "mobileBreakpoint" : 610,
+    "mobileBreakpoint" : 450,
     "tickDayInterval": 14
   }
 }

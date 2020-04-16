@@ -95,7 +95,7 @@
     }
 
     @media only screen and (max-width: 610px) {
-      text{
+      text,#keyunit{
         font-size:12px;
       }
     }
@@ -198,8 +198,6 @@
       var x = d3.scaleTime()
         .domain(d3.extent(dates))
         .range([0, width])
-
-      // TODO: create axis with dates
 
       var svg = d3.select('div#charts')
         .selectAll('svg')
@@ -313,6 +311,7 @@
 
       var xaxis = d3.axisBottom(x)
         .tickSize(3)
+        .ticks(dvc.essential.tickNumber[screenSize])
       // .ticks(d3.timeDay.every(dvc.optional.tickDayInterval));
 
       d3.selectAll('path.domain')
@@ -533,7 +532,7 @@
         d3.select("#key")
           .append("p")
           .attr("id", "keyunit")
-          .style("margin-top", "-10px")
+          .style("margin-top", "-6px")
           .style("margin-left", "10px")
           .text(dvc.essential.varunit);
       } //end createkey
