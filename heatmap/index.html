@@ -130,9 +130,16 @@
 
       chosenCountries = dvc.essential.chosenCountries;
 
+      var test=RegExp(/(percent)/)
+      categories=Object.keys(graphic_data[0]).filter(function(d){return test.test(d)})
+
       just6 = graphic_data.filter(function(d) {
-        return chosenCountries.contains(d.Country);
+        return chosenCountries.contains(d.country_region_code);
+      }).filter(function(d){
+        return d.sub_region_1=="";
       })
+
+      console.log(just6)
 
       //create custom sorting index as set by entry of countries in the config
       sortObject={}
@@ -145,35 +152,51 @@
         categorySort[dvc.essential.categorySort[i]]=i;
       }
 
-      just6.sort(function(a,b){
+      columnCategories = Object.keys(graphic_data[0]).filter(function(d) {
+        return /percent_change_from_baseline/.test(d) == false;
+      });
+
+      just6.forEach(function(d) {
+        d.date=d3.timeParse(dvc.essential.timeParseFormat)(d.date);
+      });
+
+      // convert wide to long
+      var long_data=[]
+      just6.forEach(function(row){
+        Object.keys(row).forEach(function(colname){
+          categories.forEach(function(d){
+            long_data.push({
+              country_region_code:row.country_region_code,
+              country_region:row.country_region,
+              date:row.date,
+              category:d,
+              value:row[d]
+
+            })
+          })
+        })
+
+      });
+
+
+      long_data.sort(function(a,b){
+        return sortObject[a.country_region_code] - sortObject[b.country_region_code]
+      })
+
+      long_data.sort(function(a,b){
         return categorySort[a.category] - categorySort[b.category]
       })
-      just6.sort(function(a,b){
-        return sortObject[a.Country] - sortObject[b.Country]
-      })
-
-      nameCodeLookup={}
-      for(i=0;i<just6.length;i++){
-        nameCodeLookup[just6[i].Country]=just6[i].location
-      }
-
-      columnDates = Object.keys(graphic_data[0]).filter(function(d) {
-        return /^[A-Z]/i.test(d) == false;
-      });
-
-      dates = columnDates.map(function(d) {
-        return d3.timeParse(dvc.essential.timeParseFormat)(d);
-      });
 
 
       nested = d3.nest()
         .key(function(d) {
           return d.category
         })
-        .key(function(d) {
-          return d.Country
+        .key(function(d){
+          return d.country_region
         })
-        .entries(just6)
+        .entries(long_data)
+
 
       if (chartwidth < dvc.optional.mobileBreakpoint) {
         var screenSize = "small";
@@ -195,9 +218,11 @@
       setupScales();
       createKey();
 
-      var x = d3.scaleTime()
-        .domain(d3.extent(dates))
+      x = d3.scaleTime()
+        .domain(d3.extent(just6,function(d){return d.date}))
         .range([0, width])
+
+      numberofdays=Math.round(((x.domain()[1]-x.domain()[0])/(1000 * 60 * 60 * 24 )))
 
       var svg = d3.select('div#charts')
         .selectAll('svg')
@@ -211,17 +236,17 @@
         .attr('transform', function(d, i) {
           return 'translate(' + margin.left + ',' + margin.top + ')'
         });
-
+      //
       svg.append('text')
         .text(function(d) {
-          return d.key
+          return dvc.essential.categoryNames[d.key]
         })
         .attr('y', -margin.top + 12)
         .attr('x', -margin.left)
         .attr('font-weight', 700)
         .style("font-size", "12px")
         .style("fill", "#323132");
-
+      //
       category = svg.selectAll('g.category')
         .data(function(d) {
           return d.values;
@@ -235,39 +260,32 @@
 
       category.append('text')
         .text(function(d) {
-          return nameCodeLookup[d.key]
+          return d.key
         })
         .attr("x", -5)
         .attr('text-anchor', "end")
 
+
+
       blocks = category.selectAll('rect')
         .data(function(d) {
-          return d.values.map(function(d) {
-            var blank = []
-            for (i = 0; i < columnDates.length; i++) {
-              blank.push({
-                "date": columnDates[i],
-                "value": d[columnDates[i]]
-              })
-            }
-            return blank;
-          })[0]
+          return d.values
         })
         .enter()
         .append('rect')
         .attr("x", function(d, i) {
-          return x(d3.timeParse(dvc.essential.timeParseFormat)(d.date));
+          return x(d.date);
         })
         .attr('y', -15)
         .attr('height', 0.9 * categoryHeight)
         .attr("width", function() {
-          return 0.95 * x.range()[1] / columnDates.length
+          return 0.80 * x.range()[1] / numberofdays
         })
         .attr("fill", function(d) {
           return color(+d.value)
         })
         .on("mouseover", function(d) {
-          setAxisVal(d.value)
+          setAxisVal(+d.value)
         })
         .on("mouseout", function(d) {
           hideaxisVal();
@@ -317,7 +335,7 @@
       d3.selectAll('path.domain')
         .style('opacity', 0);
 
-      svg.append('g').attr("class", "axis").call(xaxis).attr('transform', "translate(" + (0.475 * x.range()[1] / columnDates.length) + "," + (chosenCountries.length * categoryHeight + 3) + ")")
+      svg.append('g').attr("class", "axis").call(xaxis).attr('transform', "translate(" + (0.475 * x.range()[1] / numberofdays) + "," + (chosenCountries.length * categoryHeight + 3) + ")")
 
       // make a key
 
@@ -352,17 +370,13 @@
         //Flatten data values and work out breaks
 
         //If jenks or equal then flatten data so we can work out what the breaks need to be
-
-        // Work out how many timepoints we have in our dataset; number of rows - area name & code // Look at linechart templates to see how?
-
-        // parse data into columns
         if (dvc.essential.breaks == "jenks" || dvc.essential.breaks == "equal") {
           var values = [];
           allvalues = [];
 
-          for (var column in columnDates) {
-            values[columnDates[column]] = data.map(function(d) {
-              return +d[columnDates[column]];
+          for (var column in categories) {
+            values[categories[column]] = data.map(function(d) {
+              return +d[categories[column]];
             }).filter(function(d) {
               return !isNaN(d);
             }).sort(d3.ascending);
