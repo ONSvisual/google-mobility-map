@@ -1,8 +1,15 @@
 {
   "essential" : {
-    "graphic_data_url": "https://raw.githubusercontent.com/datasciencecampus/google-mobility-reports-data/master/csvs/international_national_trends_G20_20200410.csv",
+    "graphic_data_url": "Global_Mobility_Report.csv",
     "chosenCountries":["GB", "ES", "IT", "DE", "FR", "US"],
-    "categorySort":["Workplaces","Retail & recreation","Transit stations","Grocery & pharmacy","Parks","Residential"],
+    "categorySort":["workplaces_percent_change_from_baseline","retail_and_recreation_percent_change_from_baseline","transit_stations_percent_change_from_baseline","grocery_and_pharmacy_percent_change_from_baseline","parks_percent_change_from_baseline","residential_percent_change_from_baseline"],
+    "categoryNames":{"workplaces_percent_change_from_baseline":"Workplace"
+      ,"retail_and_recreation_percent_change_from_baseline":"Retail"
+      ,"transit_stations_percent_change_from_baseline":"Transit"
+      ,"grocery_and_pharmacy_percent_change_from_baseline":"Grocery and pharmacies"
+      ,"parks_percent_change_from_baseline":"Parks"
+      ,"residential_percent_change_from_baseline":"Residential"
+    },
     "categoryHeight": {
       "small": 20,
       "medium": 20
