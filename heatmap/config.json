@@ -1,6 +1,6 @@
 {
   "essential" : {
-    "graphic_data_url": "https://cors.x7.workers.dev/https://www.gstatic.com/covid19/mobility/Global_Mobility_Report.csv",
+    "graphic_data_url": "Global_Mobility_Report.csv",
     "chosenCountries":["GB", "ES", "IT", "DE", "FR", "US"],
     "categorySort":["workplaces_percent_change_from_baseline","retail_and_recreation_percent_change_from_baseline","transit_stations_percent_change_from_baseline","grocery_and_pharmacy_percent_change_from_baseline","parks_percent_change_from_baseline","residential_percent_change_from_baseline"],
     "categoryNames":{"workplaces_percent_change_from_baseline":"Workplace"
